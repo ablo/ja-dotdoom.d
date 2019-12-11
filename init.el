@@ -13,10 +13,7 @@
        ;;japanese
 
        :completion
-       (company          ; the ultimate code completion backend
-        +tng
-        +auto            ; as-you-type code completion
-        +childframe)     ; a nicer company UI. Emacs +26 only!
+       company          ; the ultimate code completion backend
        ;;helm              ; the *other* search engine for love and life
        ;;ido               ; the other *other* search engine...
        ivy               ; a search engine for love and life
@@ -67,9 +64,9 @@
        vc                ; version-control and Emacs, sitting in a tree
 
        :term
-       ;;eshell            ; a consistent, cross-platform shell (WIP)
-       shell             ; a terminal REPL for Emacs
-       ;;term              ; terminals in Emacs
+       ;; eshell            ; a consistent, cross-platform shell (WIP)
+       ;; shell             ; a terminal REPL for Emacs
+       term              ; terminals in Emacs
        ;;vterm             ; another terminals in Emacs
 
        :tools

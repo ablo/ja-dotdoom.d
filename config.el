@@ -2,7 +2,12 @@
 ;; Free the right option key from META. Need it to type some charactes
 ;; (setq ns-left-alternate-modifier 'none)
 
-(global-auto-revert-mode t)
+(setq
+ doom-font (font-spec :family "SF Mono" :size 14)
+ doom-variable-pitch-font (font-spec :family "Avenir Next" :size 15)
+ global-auto-revert-mode t
+ )
+
 
 ;; Bindings
 (map!
@@ -30,9 +35,6 @@
 (define-key global-map "\C-cc" 'org-capture)
 
 (setq
- ;; UI
- doom-font (font-spec :family "SF Mono" :size 14)
- doom-variable-pitch-font (font-spec :family "Avenir Next" :size 15)
 
  ;; Modes
  web-mode-markup-indent-offset 4
@@ -42,46 +44,26 @@
  mac-right-option-modifier 'right ; Set right only
 
  dired-dwim-target t
+ )
 
  ;; Org
+(setq
  org-agenda-skip-scheduled-if-done t
  org-tags-column -80
 
- org-directory "~/Dropbox/Org/"
- org-agenda-files '("~/Dropbox/Org/inbox.org"
-                    "~/Dropbox/Org/gtd.org"
-                    "~/Dropbox/Org/tickler.org")
- org-log-done 'time
- org-refile-targets '(("~/Dropbox/Org/gtd.org" :maxlevel . 2)
-                      ("~/Dropbox/Org/someday.org" :maxlevel . 1)
-                      ("~/Dropbox/Org/tickler.org" :maxlevel . 1)
-                      ("~/Dropbox/Org/Notes/notes.org" :maxlevel . 1)
-                      ("~/Dropbox/Org/Notes/InPress/inpress-notes.org" :maxlevel . 1))
- 
+ +org-capture-todo-file "inbox.org"
  org-archive-location "~/Dropbox/Org/Archive/archive.org::* From %s"
- org-default-notes-file "/Users/johanabelson/org/notes.org"
- 
- org-capture-templates '(("t" "Todo [inbox]" entry
-                          (file+headline "~/Dropbox/org/inbox.org" "Tasks")
-                          "* TODO %i%?")
-                         ;; Tickler item
-                         ("T" "Tickler" entry
-                          (file+headline "~/Dropbox/Org/tickler.org" "Tickler")
-                          "* %i%? \n %U")
-                         ;; Journal entry
-                         ("j" "Journal" entry
-                          (file+datetree "~/Dropbox/Org/journal.org") "** %^{Heading}")
-                         )
- org-todo-keyword-faces '(("NEXT" . "Yellow")
-                          ("TODO" . "Palegreen4")
-                          ("WAITING" . "DarkOliveGreen")
-                          ("DONE" . "YellowGreen")
-                          ("CANCELLED" .  "Palevioletred4"))
+ org-default-notes-file "~/Dropbox/Org/Notes/notes.org"
+ ;; org-todo-keyword-faces '(("NEXT" . "Yellow")
+ ;;                          ("TODO" . "Palegreen4")
+ ;;                          ("WAITING" . "DarkOliveGreen")
+ ;;                          ("DONE" . "YellowGreen")
+ ;;                          ("CANCELLED" .  "Palevioletred4"))
 
  ;; Org tags
  org-tag-alist '(( "@HOME" . ?H) ( "@WORK" . ?W) ( "@INPRESS" . ?I) ( "@OUT" . ?O) ( "@ANYTIME" . ?A) ( "@DAYTIME" . ?D) ( "leaving" . ?l) ( "focus" . ?f) ( "routine" . ?r) ( "do" . ?d) ( "5min" . ?5) )
  ;; Org keywords
- org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "WAITING(w)" "DONE(d)" "CANCELLED(c)"))
+ org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "WAITING(w)" "CANCELLED(c)" "DONE(d)" ))
 
  ;; Effort and global properties
  org-global-properties '(("Effort_ALL". "0 0:05 0:10 0:15 0:20 0:25"))
@@ -89,13 +71,60 @@
  ;; Set global Column View format
  org-columns-default-format '"%38ITEM(Details) %TAGS(Context) %7TODO(To Do) %5Effort(Time){:} %6CLOCKSUM(Clock)"
 
- ;; hl-todo
- hl-todo-keyword-faces `(
-                         ("TODO"       warning bold)
-                         ("FIXME"      error bold)
-                         ("REVIEW"     font-lock-keyword-face bold)
-                         ("NOTE"       success bold)
-                         )
+ org-bullets-bullet-list '("⁖")
+ org-ellipsis " ... "
+ )
+
+(after! org
+  (setq org-capture-templates '(("t" "Todo [inbox]" entry
+                                 (file+headline "~/Dropbox/org/inbox.org" "Tasks")
+                                 "* TODO %i%?")
+                                ;; Tickler item
+                                ("T" "Tickler" entry
+                                 (file+headline "~/Dropbox/Org/tickler.org" "Tickler")
+                                 "* %i%? \n %U")
+                                ;; Journal entry
+                                ("j" "Journal" entry
+                                 (file+datetree "~/Dropbox/Org/journal.org") "** %^{Heading}")
+                                )
+        org-directory "~/Dropbox/Org/"
+        org-agenda-files '("~/Dropbox/Org/inbox.org"
+                           "~/Dropbox/Org/gtd.org"
+                           "~/Dropbox/Org/tickler.org")
+        org-refile-targets '(("~/Dropbox/Org/gtd.org" :maxlevel . 2)
+                             ("~/Dropbox/Org/someday.org" :maxlevel . 1)
+                             ("~/Dropbox/Org/tickler.org" :maxlevel . 1)
+                             ("~/Dropbox/Org/Notes/notes.org" :maxlevel . 1)
+                             ("~/Dropbox/Org/Notes/InPress/inpress-notes.org" :maxlevel . 1))
+        )
+)
+
+(after! hl-todo
+  (setq
+
+   ;; hl-todo
+   hl-todo-keyword-faces '(
+                           ("HOLD" . "#d0bf8f")
+                           ("TODO" . "#cc9393")
+                           ("NEXT" . "Yellow")
+                           ("THEM" . "#dc8cc3")
+                           ("PROG" . "#7cb8bb")
+                           ("OKAY" . "#7cb8bb")
+                           ("DONT" . "#5f7f5f")
+                           ("FAIL" . "#8c5353")
+                           ("DONE" . "#afd8af")
+                           ("NOTE" . "#d0bf8f")
+                           ("KLUDGE" . "#d0bf8f")
+                           ("HACK" . "#d0bf8f")
+                           ("TEMP" . "#d0bf8f")
+                           ("FIXME" . "#cc9393")
+                           ("XXX+" . "#cc9393"))
+
+   )
+  )
+
+(setq
+
 
  calendar-week-start-day 1
  user-full-name "Johan Abelson"
@@ -123,6 +152,7 @@
 ;; Mail - mu4e
 (require 'mu4e)
 
+(setq mu4e-change-filenames-when-moving t)
 ;;location of my maildir
 (setq mu4e-maildir (expand-file-name "~/mbsync"))
 
