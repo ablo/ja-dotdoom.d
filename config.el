@@ -2,10 +2,12 @@
 ;; Free the right option key from META. Need it to type some charactes
 ;; (setq ns-left-alternate-modifier 'none)
 
+
 (setq
- doom-font (font-spec :family "SF Mono" :size 14)
+ doom-font (font-spec :family "Fira Code" :size 14)
  doom-variable-pitch-font (font-spec :family "Avenir Next" :size 15)
  global-auto-revert-mode t
+ ;; shell-file-name "/bin/sh"
  )
 
 
@@ -19,10 +21,10 @@
 (define-key evil-normal-state-map (kbd "SPC a") #'mu4e)
 
 ;; hl-todo
-(define-key hl-todo-mode-map (kbd "C-c p") #'hl-todo-previous)
-(define-key hl-todo-mode-map (kbd "C-c n") #'hl-todo-next)
-(define-key hl-todo-mode-map (kbd "C-c o") #'hl-todo-occur)
-(define-key hl-todo-mode-map (kbd "C-c i") #'hl-todo-insert)
+;; (define-key hl-todo-mode-map (kbd "C-c p") #'hl-todo-previous)
+;; (define-key hl-todo-mode-map (kbd "C-c n") #'hl-todo-next)
+;; (define-key hl-todo-mode-map (kbd "C-c o") #'hl-todo-occur)
+;; (define-key hl-todo-mode-map (kbd "C-c i") #'hl-todo-insert)
 
 ;; Setup my agenda files
 (define-key global-map "\C-ca" 'org-agenda)
@@ -46,24 +48,18 @@
  dired-dwim-target t
  )
 
- ;; Org
+;; Org
 (setq
  org-agenda-skip-scheduled-if-done t
- org-tags-column -80
-
- +org-capture-todo-file "inbox.org"
- org-archive-location "~/Dropbox/Org/Archive/archive.org::* From %s"
- org-default-notes-file "~/Dropbox/Org/Notes/notes.org"
- ;; org-todo-keyword-faces '(("NEXT" . "Yellow")
- ;;                          ("TODO" . "Palegreen4")
- ;;                          ("WAITING" . "DarkOliveGreen")
- ;;                          ("DONE" . "YellowGreen")
- ;;                          ("CANCELLED" .  "Palevioletred4"))
+ org-reverse-note-order t
+ org-todo-keyword-faces '(("NEXT" . "Yellow")
+                          ("TODO" . "Palegreen4")
+                          ("WAITING" . "DarkOliveGreen")
+                          ("DONE" . "YellowGreen")
+                          ("CANCELLED" .  "Palevioletred4"))
 
  ;; Org tags
  org-tag-alist '(( "@HOME" . ?H) ( "@WORK" . ?W) ( "@INPRESS" . ?I) ( "@OUT" . ?O) ( "@ANYTIME" . ?A) ( "@DAYTIME" . ?D) ( "leaving" . ?l) ( "focus" . ?f) ( "routine" . ?r) ( "do" . ?d) ( "5min" . ?5) )
- ;; Org keywords
- org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "WAITING(w)" "CANCELLED(c)" "DONE(d)" ))
 
  ;; Effort and global properties
  org-global-properties '(("Effort_ALL". "0 0:05 0:10 0:15 0:20 0:25"))
@@ -87,41 +83,25 @@
                                 ("j" "Journal" entry
                                  (file+datetree "~/Dropbox/Org/journal.org") "** %^{Heading}")
                                 )
+        org-tags-column -80
+        org-archive-location "~/Dropbox/Org/Archive/archive.org::* From %s"
+        org-default-notes-file "~/Dropbox/Org/Notes/notes.org"
+        +org-capture-todo-file "inbox.org"
+        ;; Org keywords
+        org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "SCHEDULED(s)" "WAITING(w)" "|" "DONE(d)" ))
         org-directory "~/Dropbox/Org/"
         org-agenda-files '("~/Dropbox/Org/inbox.org"
-                           "~/Dropbox/Org/gtd.org"
+                           "~/Dropbox/Org/work.org"
+                           "~/Dropbox/Org/personal.org"
                            "~/Dropbox/Org/tickler.org")
-        org-refile-targets '(("~/Dropbox/Org/gtd.org" :maxlevel . 2)
+        org-refile-targets '(("~/Dropbox/Org/work.org" :maxlevel . 2)
+                             ("~/Dropbox/Org/personal.org" :maxlevel . 1)
                              ("~/Dropbox/Org/someday.org" :maxlevel . 1)
-                             ("~/Dropbox/Org/tickler.org" :maxlevel . 1)
-                             ("~/Dropbox/Org/Notes/notes.org" :maxlevel . 1)
-                             ("~/Dropbox/Org/Notes/InPress/inpress-notes.org" :maxlevel . 1))
+                             ("~/Dropbox/Org/tickler.org" :maxlevel . 1))
         )
-)
-
-(after! hl-todo
-  (setq
-
-   ;; hl-todo
-   hl-todo-keyword-faces '(
-                           ("HOLD" . "#d0bf8f")
-                           ("TODO" . "#cc9393")
-                           ("NEXT" . "Yellow")
-                           ("THEM" . "#dc8cc3")
-                           ("PROG" . "#7cb8bb")
-                           ("OKAY" . "#7cb8bb")
-                           ("DONT" . "#5f7f5f")
-                           ("FAIL" . "#8c5353")
-                           ("DONE" . "#afd8af")
-                           ("NOTE" . "#d0bf8f")
-                           ("KLUDGE" . "#d0bf8f")
-                           ("HACK" . "#d0bf8f")
-                           ("TEMP" . "#d0bf8f")
-                           ("FIXME" . "#cc9393")
-                           ("XXX+" . "#cc9393"))
-
-   )
   )
+
+
 
 (setq
 
@@ -135,9 +115,6 @@
  ;; disabling them outweighs the utility of always keeping them on.
  display-line-numbers-type nil
 
- ;; On-demand code completion. I don't often need it.
- company-idle-delay 0.5
-
  ;; Magit
  magit-repository-directories '(("~/Projects" . 2))
  )
@@ -145,7 +122,7 @@
 
 
 
-
+(setq-hook! 'eshell-mode-hook company-idle-delay nil)
 
 
 
@@ -246,9 +223,55 @@
                       :height 1.75
                       :weight 'bold)
   ;; (setq org-fancy-priorities-list '("⚡" "⬆" "⬇" "☕"))
+
+  (setq org-agenda-custom-commands
+        '(("c" . "My Custom Agendas")
+          ("cu" "Unscheduled TODO"
+           ((todo ""
+                  ((org-agenda-overriding-header "\nUnscheduled TODO")
+                   (org-agenda-skip-function '(org-agenda-skip-entry-if 'timestamp)))))
+           nil
+           nil)))
   )
 
 ;; Language
 (add-hook!
  js2-mode 'prettier-js-mode
  (add-hook 'before-save-hook #'refmt-before-save nil t))
+
+;; Org Projectile
+;; (use-package org-projectile
+;;   :bind (("C-c n p" . org-projectile-project-todo-completing-read)
+;;          ("C-c c" . org-capture))
+;;   :config
+;;   (progn
+;;     (setq org-projectile-projects-file "~/Dropbox/Org/projects.org")
+;;     (setq org-agenda-files (append org-agenda-files (org-projectile-todo-files)))
+;;     (push (org-projectile-project-todo-entry) org-capture-templates))
+;;   :ensure t)
+
+(require 'org-projectile)
+(setq org-projectile-projects-file "~/Dropbox/Org/projects.org")
+(push (org-projectile-project-todo-entry) org-capture-templates)
+(setq org-agenda-files (append org-agenda-files (org-projectile-todo-files)))
+(global-set-key (kbd "C-c c") 'org-capture)
+(global-set-key (kbd "C-c n p") 'org-projectile-project-todo-completing-read)
+
+;; web-beautify
+(eval-after-load 'js2-mode
+  '(define-key js2-mode-map (kbd "C-c b") 'web-beautify-js))
+;; Or if you're using 'js-mode' (a.k.a 'javascript-mode')
+(eval-after-load 'js
+  '(define-key js-mode-map (kbd "C-c b") 'web-beautify-js))
+
+(eval-after-load 'json-mode
+  '(define-key json-mode-map (kbd "C-c b") 'web-beautify-js))
+
+(eval-after-load 'sgml-mode
+  '(define-key html-mode-map (kbd "C-c b") 'web-beautify-html))
+
+(eval-after-load 'web-mode
+  '(define-key web-mode-map (kbd "C-c b") 'web-beautify-html))
+
+(eval-after-load 'css-mode
+  '(define-key css-mode-map (kbd "C-c b") 'web-beautify-css))
