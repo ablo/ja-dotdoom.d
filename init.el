@@ -59,12 +59,12 @@
 
        :emacs
        dired             ; making dired pretty [functional]
-       ;; electric          ; smarter, keyword-based electric-indent
+       electric          ; smarter, keyword-based electric-indent
        ;; ibuffer           ; interactive buffer management
        ;; vc                ; version-control and Emacs, sitting in a tree
 
        :term
-       ;; eshell            ; a consistent, cross-platform shell (WIP)
+       eshell            ; a consistent, cross-platform shell (WIP)
        ;; shell             ; a terminal REPL for Emacs
        ;; term              ; terminals in Emacs
        ;;vterm             ; another terminals in Emacs
@@ -83,7 +83,7 @@
        (lookup           ; helps you navigate your code and documentation
         +docsets)        ; ...or in Dash docsets locally
        lsp
-       macos             ; MacOS-specific commands
+       ;; macos             ; MacOS-specific commands
        magit             ; a git porcelain for Emacs
        ;;make              ; run make tasks from Emacs
        ;;pass              ; password manager for nerds
@@ -98,7 +98,7 @@
        :lang
        ;;agda              ; types of types of types of types...
        ;;assembly          ; assembly for fun or debugging
-       ;;cc                ; C/C++/Obj-C madness
+       ;; (cc +lsp)                ; C/C++/Obj-C madness
        ;;clojure           ; java with a lisp
        ;;common-lisp       ; if you've seen one lisp, you've seen them all
        ;;coq               ; proofs-as-programs
@@ -130,13 +130,14 @@
        ;;ocaml             ; an objective camel
        (org              ; organize your plain life in plain text
         +dragndrop       ; drag & drop files/images into org buffers
-        ;+hugo            ; use Emacs for hugo blogging
+        +hugo            ; use Emacs for hugo blogging
+        +journal
         ;; +ipython         ; ipython/jupyter support for babel
         ;; +pandoc          ; export-with-pandoc support
         ;+pomodoro        ; be fruitful with the tomato technique
         +present)        ; using org-mode for presentations
        ;;perl              ; write code no one else can comprehend
-       php               ; perl's insecure younger brother
+       (php +lsp)               ; perl's insecure younger brother
        ;;plantuml          ; diagrams for confusing people more
        ;;purescript        ; javascript, but functional
        ;;python            ; beautiful is better than ugly
@@ -147,11 +148,11 @@
        ;;rust              ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
        ;;scala             ; java, but good
        ;;scheme            ; a fully conniving family of lisps
-       ;; sh                ; she sells {ba,z,fi}sh shells on the C xor
+       ;; (sh +lsp)                ; she sells {ba,z,fi}sh shells on the C xor
        ;;solidity          ; do you need a blockchain? No.
        ;;swift             ; who asked for emoji variables?
        ;;terra             ; Earth and Moon in alignment for performance.
-       (web +lsp)               ; the tubes
+       (web +lsp)          ; the tubes
 
        :email
        ;; (mu4e +gmail)       ; WIP

@@ -8,9 +8,11 @@
 
 (setq doom-font (font-spec :family "Fira Code" :size 14))
 (setq doom-variable-pitch-font (font-spec :family "Avenir Next" :size 15))
+;; (setq +doom-dashboard-banner-file (expand-file-name "doom-star .png" doom-private-dir))
 (setq global-auto-revert-mode t)
 
-
+;; (setq explicit-shell-file-name "/bin/bash")
+(setq tramp-connection-timeout 10)
 ;; Bindings
 
 ;; hl-todo
@@ -23,23 +25,25 @@
 ;; Need to use right modifier for some characters
 (setq mac-right-option-modifier 'right)
 
+(setq alert-default-style 'libnotify)
+
 ;; Deft
-(setq deft-directory "~/Dropbox/Org/Notes")
+(setq deft-directory "~/Dropbox/Org/notes")
 (setq deft-recursive t)
 
 
 (setq
  org-agenda-skip-scheduled-if-done t
  org-agenda-skip-deadline-if-done t
- org-agenda-todo-ignore-with-date t
+ ;; org-agenda-todo-ignore-with-date t
+ ;; org-agenda-window-setup 'reorganize-frame
  org-reverse-note-order t
- org-todo-keyword-faces '(("NEXT" . "Yellow")
-                          ("TODO" . "Palegreen4")
-                          ("WAITING" . "DarkOliveGreen")
-                          ("DONE" . "YellowGreen"))
+ org-todo-keyword-faces '(("TODO" . "YellowGreen")
+                          ("WAITING" . "Yellow")
+                          ("DONE" . "DimGray"))
 
  ;; Set global Column View format
- org-columns-default-format '"%38ITEM(Details) %TAGS(Context) %7TODO(To Do) %5Effort(Time){:} %6CLOCKSUM(Clock)"
+ ;; org-columns-default-format '"%38ITEM(Details) %TAGS(Context) %7TODO(To Do) %5Effort(Time){:} %6CLOCKSUM(Clock)"
 
  org-bullets-bullet-list '("⁖")
  org-ellipsis " ... "
@@ -47,44 +51,118 @@
 
 (after! org
   (setq org-capture-templates '(("t" "Todo [inbox]" entry
-                                 (file+headline "~/Dropbox/Org/inbox.org" "Tasks")
+                                 (file+headline "~/Dropbox/Org/gtd/inbox.org" "Tasks")
                                  "* TODO %i%?")
                                 ;; Tickler item
                                 ("T" "Tickler" entry
-                                 (file+headline "~/Dropbox/Org/tickler.org" "Tickler")
+                                 (file+headline "~/Dropbox/Org/gtd/tickler.org" "Tickler")
                                  "* %i%? \n %U")
                                 ;; Journal entry
                                 ("j" "Journal" entry
-                                 (file+datetree "~/Dropbox/Org/journal.org") "** %^{Heading}")
+                                 (file+datetree "~/Dropbox/Org/notes/journal.org") "** %^{Heading}")
                                 )
         org-tags-column -80
-        org-archive-location "~/Dropbox/Org/Archive/archive.org::* From %s"
-        org-default-notes-file "~/Dropbox/Org/Notes/notes.org"
-        +org-capture-todo-file "inbox.org"
         org-directory "~/Dropbox/Org/"
+        +org-export-directory org-directory
+        org-archive-location "~/Dropbox/Org/Archive/archive.org::* From %s"
+        org-default-notes-file "~/Dropbox/Org/notes/notes.org"
+        +org-capture-todo-file "~/Dropbox/Org/gtd/inbox.org"
+        +org-capture-notes-file "~/Dropbox/Org/notes/notes.org"
+        +org-capture-journal-file "~/Dropbox/Org/journal/journal.org"
+        +org-capture-projects-file "~/Projects/projects.org"
         
-        org-agenda-files '("~/Dropbox/Org/inbox.org"
-                           "~/Dropbox/Org/work.org"
-                           "~/Dropbox/Org/personal.org"
-                           "~/Dropbox/Org/tickler.org")
+        org-agenda-files '("~/Dropbox/Org/gtd/inbox.org"
+                           "~/Dropbox/Org/gtd/gtd.org"
+                           "~/Dropbox/Org/gtd/tickler.org")
 
-        org-refile-targets '(("~/Dropbox/Org/work.org" :maxlevel . 2)
-                             ("~/Dropbox/Org/personal.org" :maxlevel . 2)
-                             ("~/Dropbox/Org/someday.org" :maxlevel . 1)
-                             ("~/Dropbox/Org/tickler.org" :maxlevel . 1))
+        org-refile-targets '(("~/Dropbox/Org/gtd/gtd.org" :maxlevel . 2)
+                             ("~/Dropbox/Org/gtd/someday.org" :maxlevel . 1)
+                             ("~/Dropbox/Org/gtd/tickler.org" :maxlevel . 1))
+                
+        ;; ;; Set Org tags
+
+        org-tag-alist '(
+                        ("@anytime" . ?t)
+                        ("@daytime" . ?d)
+                        ("@leaving" . ?l)
+                        ("@evening" . ?e)
+                        (:newline . nil)
+                        ("@anywhere" . ?a)
+                        ("@work" . ?w)
+                        ("@inpress" . ?i)
+                        ("@home" . ?h)
+                        ("@school" . ?s)
+                        ("@city" . ?c)
+                        (:newline . nil)
+                        ("@kate" . ?k)
+                        )
+
+        ;; org-tag-alist '((:startgroup . nil)
+        ;;                 ("computer" . ?1)
+        ;;                 ("hands" . ?2)
+        ;;                 (:endgroup . nil)
+        ;;                 (:startgroup . nil)
+        ;;                 ("workday" . ?d)
+        ;;                 ("weekend" . ?w)
+        ;;                 ("owntime" . ?o)
+        ;;                 ("25th" . ?2)
+        ;;                 ("kate" . ?k)
+        ;;                 (:endgroup)
+        ;;                 (:startgroup . nil)
+        ;;                 ("WORK" . ?W)
+        ;;                 (:grouptags)
+        ;;                 ("productive" . ?p)
+        ;;                 ("management" . ?m)
+        ;;                 (:endgroup . nil)
+        ;;                 (:startgroup . nil)
+        ;;                 ("HOME" . ?H)
+        ;;                 (:grouptags)
+        ;;                 ("house" . ?h)
+        ;;                 ("garden" . ?g)
+        ;;                 ("leaving" . ?l)
+        ;;                 ("vuxentid" . ?v)
+        ;;                 (:endgroup . nil)
+        ;;                 (:startgroup . nil)
+        ;;                 ("OUT" . ?O)
+        ;;                 (:grouptags)
+        ;;                 ("errand" . ?e)
+        ;;                 ("skolan" . ?s)
+        ;;                 (:endgroup . nil)
+        ;;                 )
+
+        ;; Keywords
+        org-todo-keywords '((sequence "TODO(t)" "WAITING(w)" "|" "DONE(d)"))
         )
   
 
-
+;; (key desc type match settings files)
   (setq org-agenda-custom-commands
-        '(("c" . "My Custom Agendas")
-          ("cu" "Unscheduled TODO"
-           ((todo ""
-                  ((org-agenda-overriding-header "\nUnscheduled TODO")
-                   (org-agenda-skip-function '(org-agenda-skip-entry-if 'timestamp)))))
-           nil
-           nil))
-        org-agenda-include-diary t)
+        '(("w" "Work-mode" tags-todo "+PRIORITY=\"A\"+@work"
+           ((org-agenda-files '("~/Dropbox/Org/gtd/gtd.org" "~/Dropbox/Org/gtd/projects.org"))
+            (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo '("WAITING")))
+            (org-agenda-sorting-strategy '(priority-down effort-down)))
+           )
+          ("i" "InPress-mode" tags "@inpress"
+           ((org-agenda-files '("~/Dropbox/Org/gtd/gtd.org"))
+            (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo '("WAITING")))
+            (org-agenda-sorting-strategy '(priority-down effort-down)))
+           )
+          ("h" "Home-mode" tags-todo "@home"
+           ((org-agenda-files '("~/Dropbox/Org/gtd/gtd.org"))
+            ;; (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
+            (org-agenda-sorting-strategy '(priority-down effort-down)))
+           )
+("l" tags "+@leaving")
+("k" tags "+@kate")
+))
+
+        ;; ("k" "Kate <3" tags-todo "kate")
+        ;;   ("h" "House stuff" ((tags-todo "house") (tags "kate"))
+        ;;    ((org-agenda-files '("~/Dropbox/Org/gtd.org"))
+        ;;                       (org-agenda-sorting-strategy '(priority-up effort-down)))))
+
+        (setq org-agenda-include-diary t)
+
   (set-face-attribute 'org-link nil
                       :weight 'normal
                       :background nil)
