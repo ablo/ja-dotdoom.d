@@ -1,9 +1,4 @@
 
-;; Free the right option key from META. Need it to type some charactes
-;; (setq ns-left-alternate-modifier 'none)
-
-;; If your configuration needs are simple, the use-package!, after!, add-hook! and setq-hook! emacros can help you reconfigure packages
-
 (add-hook! 'org-mode-hook)
 
 (setq doom-font (font-spec :family "Fira Code" :size 14))
@@ -11,13 +6,47 @@
 ;; (setq +doom-dashboard-banner-file (expand-file-name "doom-star .png" doom-private-dir))
 (setq global-auto-revert-mode t)
 
-;; (setq explicit-shell-file-name "/bin/bash")
+(setq explicit-shell-file-name "/bin/bash")
 (setq tramp-connection-timeout 10)
+
+;; Enable tabs
+(setq custom-tab-width 4)
+(defun disable-tabs () (setq indent-tabs-mode nil))
+(defun enable-tabs  ()
+  (local-set-key (kbd "TAB") 'tab-to-tab-stop)
+  ;; (setq indent-tabs-mode t)
+  (setq tab-width custom-tab-width)
+  (setq web-mode-indent-style 1)
+  (setq web-mode-script-padding nil)
+  )
+
+(add-hook 'web-mode-hook 'enable-tabs)
+(add-hook 'php-mode-hook 'enable-tabs)
+(add-hook 'js2-mode-hook 'enable-tabs)
+
+;; -
+
+  (setq indent-tabs-mode t)
+;; Web mode
+(setq web-mode-enable-current-element-highlight t
+      web-mode-enable-current-column-highlight nil)
+
+
+;; (use-package! org-alert
+;;   :config
+;;   (setq alert-default-style 'libnotify))
+
+;; Blogging with Emacs
+(setq org2blog/wp-blog-alist
+      '(("Eat That Frog"
+         :url "https://eat-that-frog.com/xmlrpc.php"
+         :username "ablo")
+        ("Photography Gadgets"
+         :url "https://photography-gadgets.com/xmlrpc.php"
+         :username "ablo"))
+      org2blog/wp-show-post-in-browser t)
+
 ;; Bindings
-
-;; hl-todo
-;; (define-key hl-todo-mode-map (kbd "C-c i") #'hl-todo-insert)
-
 (define-key global-map "\C-ca" 'org-agenda)
 (define-key global-map "\C-cr" 'org-refile)
 (define-key global-map "\C-cc" 'org-capture)
@@ -25,28 +54,35 @@
 ;; Need to use right modifier for some characters
 (setq mac-right-option-modifier 'right)
 
-(setq alert-default-style 'libnotify)
 
 ;; Deft
 (setq deft-directory "~/Dropbox/Org/notes")
 (setq deft-recursive t)
 
-
 (setq
  org-agenda-skip-scheduled-if-done t
  org-agenda-skip-deadline-if-done t
- ;; org-agenda-todo-ignore-with-date t
- ;; org-agenda-window-setup 'reorganize-frame
+ org-agenda-todo-ignore-with-date t
+ org-agenda-skip-deadline-prewarning-if-scheduled nil
+ org-agenda-skip-scheduled-if-deadline-is-shown t
+ 
+ ;; Agenda size
+ org-agenda-window-setup 'reorganize-frame
+ org-agenda-window-frame-fractions '(0.75 . 1.25)
+ org-agenda-restore-windows-after-quit t
+
  org-reverse-note-order t
  org-todo-keyword-faces '(("TODO" . "YellowGreen")
                           ("WAITING" . "Yellow")
-                          ("DONE" . "DimGray"))
+                          ("DONE" . "DimGray")
+                          ("CANCELLED" . "DarkRed"))
 
  ;; Set global Column View format
  ;; org-columns-default-format '"%38ITEM(Details) %TAGS(Context) %7TODO(To Do) %5Effort(Time){:} %6CLOCKSUM(Clock)"
 
  org-bullets-bullet-list '("⁖")
  org-ellipsis " ... "
+ org-id-locations-file "~/Dropbox/Org/.orgids"
  )
 
 (after! org
@@ -59,7 +95,7 @@
                                  "* %i%? \n %U")
                                 ;; Journal entry
                                 ("j" "Journal" entry
-                                 (file+datetree "~/Dropbox/Org/notes/journal.org") "** %^{Heading}")
+                                 (file+olp+datetree "~/Dropbox/Org/notes/journal.org") "** %^{Heading}")
                                 )
         org-tags-column -80
         org-directory "~/Dropbox/Org/"
@@ -81,87 +117,52 @@
                 
         ;; ;; Set Org tags
 
-        org-tag-alist '(
-                        ("@anytime" . ?t)
-                        ("@daytime" . ?d)
-                        ("@leaving" . ?l)
-                        ("@evening" . ?e)
+        org-tag-alist '(("@computer" . ?c) ("@offline" . ?o)
                         (:newline . nil)
-                        ("@anywhere" . ?a)
-                        ("@work" . ?w)
-                        ("@inpress" . ?i)
-                        ("@home" . ?h)
-                        ("@school" . ?s)
-                        ("@city" . ?c)
+                        ("@anytime" . ?t) ("@daytime" . ?d) ("@leaving" . ?l)
+                        (:newline . nil)
+                        ("@anywhere" . ?a) ("@work" . ?w) ("@inpress" . ?i) ("@home" . ?h) ("@school" . ?s) ("@errand" . ?e)
                         (:newline . nil)
                         ("@kate" . ?k)
+                        (:newline . nil)
+                        ("5min" . ?5)
                         )
 
-        ;; org-tag-alist '((:startgroup . nil)
-        ;;                 ("computer" . ?1)
-        ;;                 ("hands" . ?2)
-        ;;                 (:endgroup . nil)
-        ;;                 (:startgroup . nil)
-        ;;                 ("workday" . ?d)
-        ;;                 ("weekend" . ?w)
-        ;;                 ("owntime" . ?o)
-        ;;                 ("25th" . ?2)
-        ;;                 ("kate" . ?k)
-        ;;                 (:endgroup)
-        ;;                 (:startgroup . nil)
-        ;;                 ("WORK" . ?W)
-        ;;                 (:grouptags)
-        ;;                 ("productive" . ?p)
-        ;;                 ("management" . ?m)
-        ;;                 (:endgroup . nil)
-        ;;                 (:startgroup . nil)
-        ;;                 ("HOME" . ?H)
-        ;;                 (:grouptags)
-        ;;                 ("house" . ?h)
-        ;;                 ("garden" . ?g)
-        ;;                 ("leaving" . ?l)
-        ;;                 ("vuxentid" . ?v)
-        ;;                 (:endgroup . nil)
-        ;;                 (:startgroup . nil)
-        ;;                 ("OUT" . ?O)
-        ;;                 (:grouptags)
-        ;;                 ("errand" . ?e)
-        ;;                 ("skolan" . ?s)
-        ;;                 (:endgroup . nil)
-        ;;                 )
-
         ;; Keywords
-        org-todo-keywords '((sequence "TODO(t)" "WAITING(w)" "|" "DONE(d)"))
+        org-todo-keywords '((sequence "TODO(t)" "WAITING(w)" "|" "DONE(d)" "CANCELLED(c)"))
         )
-  
 
-;; (key desc type match settings files)
+  ;; (key desc type match settings files)
   (setq org-agenda-custom-commands
         '(("w" "Work-mode" tags-todo "+PRIORITY=\"A\"+@work"
-           ((org-agenda-files '("~/Dropbox/Org/gtd/gtd.org" "~/Dropbox/Org/gtd/projects.org"))
-            (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo '("WAITING")))
+           ((org-agenda-files '("~/Dropbox/Org/gtd/gtd.org" "~/Dropbox/Org/notes/" "~/Dropbox/Org/gtd/projects.org"))
+            (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled 'todo '("WAITING")))
             (org-agenda-sorting-strategy '(priority-down effort-down)))
            )
-          ("i" "InPress-mode" tags "@inpress"
-           ((org-agenda-files '("~/Dropbox/Org/gtd/gtd.org"))
-            (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo '("WAITING")))
+          ("W" "Planning Work" tags-todo "@work"
+           ((org-agenda-files '("~/Dropbox/Org/gtd/gtd.org" "~/Dropbox/Org/notes/" "~/Dropbox/Org/gtd/projects.org"))
+            (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
+            (org-agenda-sorting-strategy '(priority-down effort-down)))
+           )
+          ("i" "InPress-mode" tags-todo "+CATEGORY=\"InPress\"|@inpress"
+           ((org-agenda-files '("~/Dropbox/Org/gtd/gtd.org" "~/Dropbox/Org/notes/"))
+            (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo '("WAITING" "REVIEW" "IDEA" "JÖRGEN")))
             (org-agenda-sorting-strategy '(priority-down effort-down)))
            )
           ("h" "Home-mode" tags-todo "@home"
            ((org-agenda-files '("~/Dropbox/Org/gtd/gtd.org"))
-            ;; (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))
+            (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled 'todo '("WAITING")))
             (org-agenda-sorting-strategy '(priority-down effort-down)))
            )
-("l" tags "+@leaving")
-("k" tags "+@kate")
+          ("5" "5 mins" tags-todo "+5min-@inpress"
+           ((org-agenda-files '("~/Dropbox/Org/gtd/gtd.org"))
+            (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled 'todo '("WAITING")))
+            (org-agenda-sorting-strategy '(priority-down effort-down)))
+           )
+          ("l" tags "+@leaving")
+          ("k" tags "+@kate")
 ))
-
-        ;; ("k" "Kate <3" tags-todo "kate")
-        ;;   ("h" "House stuff" ((tags-todo "house") (tags "kate"))
-        ;;    ((org-agenda-files '("~/Dropbox/Org/gtd.org"))
-        ;;                       (org-agenda-sorting-strategy '(priority-up effort-down)))))
-
-        (setq org-agenda-include-diary t)
+        ;; (setq org-agenda-include-diary t)
 
   (set-face-attribute 'org-link nil
                       :weight 'normal
@@ -178,12 +179,13 @@
                       :height 1.4
                       :weight 'normal)
   (set-face-attribute 'org-level-2 nil
-                      :foreground "slategray2"
+                      ;; :foreground "slategray2"
+                      :foreground "SkyBlue2"
                       :background nil
-                      :height 1.2
+                      :height 1.1
                       :weight 'normal)
   (set-face-attribute 'org-level-3 nil
-                      :foreground "SkyBlue2"
+                      :foreground "slategray2"
                       :background nil
                       :height 1.1
                       :weight 'normal)
@@ -208,8 +210,6 @@
                       :height 1.75
                       :weight 'bold)
   )
-
-
 
 (setq
  calendar-week-start-day 1

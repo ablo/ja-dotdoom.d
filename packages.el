@@ -8,3 +8,4 @@
 
 ;; (package! prettier-js)
 ;; (package! web-beautify)
+(package! org-alert)
